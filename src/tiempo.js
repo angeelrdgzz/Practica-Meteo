@@ -2,6 +2,10 @@ const fetch = require("node-fetch");
 const descripciontiempoes = require("../src/descripciontiempo");
 
 const obtenInformacionMeteo = async (latitud, longitud) => {
+  if (typeof latitud !== "number" || typeof longitud !== "number") {
+    throw new Error("Latitud y longitud deben ser números válidos");
+  }
+  
   try {
     const apiURL = `https://api.open-meteo.com/v1/forecast?latitude=${latitud}&longitude=${longitud}&current_weather=true`;
     const respuestaAPI = await fetch(apiURL);
