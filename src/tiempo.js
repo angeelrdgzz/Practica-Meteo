@@ -1,5 +1,4 @@
-const fetch = require("node-fetch");
-const descripciontiempoes = require("../src/descripciontiempo");
+const descripciontiempo = require("../src/descripciontiempo");
 
 const obtenInformacionMeteo = async (latitud, longitud) => {
   if (typeof latitud !== "number" || typeof longitud !== "number") {
@@ -10,7 +9,11 @@ const obtenInformacionMeteo = async (latitud, longitud) => {
     const apiURL = `https://api.open-meteo.com/v1/forecast?latitude=${latitud}&longitude=${longitud}&current_weather=true`;
     const respuestaAPI = await fetch(apiURL);
     const datos = await respuestaAPI.json();
-    procesaInformacionMeteo(datos);
+
+    const weatherData = procesaInformacionMeteo(datos);
+
+    return weatherData;
+
   } catch (error) {
     console.error(`Error al obtener datos meteorológicos: ${error.message}`);
   }
@@ -19,14 +22,19 @@ const obtenInformacionMeteo = async (latitud, longitud) => {
 const procesaInformacionMeteo = (respuesta) => {
   if (!respuesta.current_weather) {
     console.error("Datos meteorológicos no encontrados.");
-    return;
+    return null;
   }
 
-  console.log("Temperatura:", `${respuesta.current_weather.temperature} °C`);
-  console.log("Velocidad del viento:", `${respuesta.current_weather.windspeed} km/h`);
+  const weatherData = {
+    temperature: respuesta.current_weather.temperature,
+    windSpeed: respuesta.current_weather.windspeed,
+    windDirection: {
+      degrees: respuesta.current_weather.winddirection,
+      cardinal: procesaDireccionViento(respuesta.current_weather.winddirection),
+    },
+  };
 
-  const direccionVientoGrados = respuesta.current_weather.winddirection;
-  console.log(`Dirección del viento: ${procesaDireccionViento(direccionVientoGrados)} (${direccionVientoGrados}°)`);
+  return weatherData;
 };
 
 const procesaDireccionViento = (grados) => {
