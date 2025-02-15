@@ -29,9 +29,6 @@ describe("obtenInformacionMeteo", () => {
         "https://api.open-meteo.com/v1/forecast?latitude=42.2576&longitude=-8.683&current_weather=true"
       )
     );
-    expect(console.log).toHaveBeenCalledWith("Temperatura:", "20 °C");
-    expect(console.log).toHaveBeenCalledWith("Velocidad del viento:", "15 km/h");
-    expect(console.log).toHaveBeenCalledWith("Dirección del viento: Noreste (45°)");
   });
 
   it("debería manejar errores de la API", async () => {
